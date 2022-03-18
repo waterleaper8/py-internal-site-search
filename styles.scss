@@ -7,6 +7,15 @@ ul.pagination {
   li {
     margin-right: 10px;
     list-style: none;
+    &.navi-active {
+      padding: 0 6px;
+      border: 1px solid #000;
+      a {
+        pointer-events: none;
+        color: black;
+        text-decoration: none;
+      }
+    }
   }
 }
 

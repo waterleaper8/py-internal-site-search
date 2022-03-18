@@ -13,6 +13,17 @@ ul.pagination li {
   list-style: none;
 }
 
+ul.pagination li.navi-active {
+  padding: 0 6px;
+  border: 1px solid #000;
+}
+
+ul.pagination li.navi-active a {
+  pointer-events: none;
+  color: black;
+  text-decoration: none;
+}
+
 #js-search-result {
   margin-top: 12px;
 }
