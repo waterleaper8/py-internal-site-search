@@ -2,3 +2,4 @@
 .siteInfoGenerator
 .ipynb_checkpoints
 .vscode
+*.ipynb

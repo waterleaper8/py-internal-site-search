@@ -1,3 +1,4 @@
+// jQueryでキーワード検索の機能を実装する
 // https://cly7796.net/blog/javascript/implement-keyword-search-function-with-jquery/
 var paramKey = "keyword" // 検索キーワードとして取得するパラメータのキー
 var jsonPath = "allSiteInfos.json" // 記事情報のjsonのパス
@@ -162,6 +163,8 @@ function generate_result(articleData, index) {
   pagenating()
 }
 
+// jQuery：「paginathing.js」を使えば静的なHTMLページへのページネーション実装が簡単にできる！
+// https://www.omakase.net/blog/2021/04/paginathingjs.html
 function pagenating() {
   $("#js-search-result").paginathing({
     //親要素のclassを記述
