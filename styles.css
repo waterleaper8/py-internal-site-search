@@ -1,0 +1,77 @@
+body {
+  padding: 60px 120px;
+}
+
+ul.pagination {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+ul.pagination li {
+  margin-right: 10px;
+  list-style: none;
+}
+
+#js-search-result {
+  margin-top: 12px;
+}
+
+#js-search-result .article {
+  padding: 6px;
+  border: 1px solid #666;
+  margin-bottom: 12px;
+}
+
+#js-search-result .article h3 {
+  margin: 12px 0;
+}
+
+#js-search-result .article .article_body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+#js-search-result .article .article_body .article_body_right {
+  margin-left: 12px;
+}
+
+.search_container {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: relative;
+  border: 1px solid #999;
+  display: block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  height: 2.3em;
+  width: 300px;
+  overflow: hidden;
+}
+
+.search_container input[type="text"] {
+  width: 100%;
+  border: none;
+  height: 2em;
+}
+
+.search_container input[type="text"]:focus {
+  outline: 0;
+}
+
+.search_container input[type="submit"] {
+  cursor: pointer;
+  font-family: FontAwesome;
+  font-size: 1.3em;
+  border: none;
+  background: none;
+  color: #3879d9;
+  position: absolute;
+  width: 2.5em;
+  height: 2.5em;
+  right: 0;
+  top: -10px;
+  outline: none;
+}
+/*# sourceMappingURL=styles.css.map */

@@ -1,0 +1,4 @@
+*.json
+.siteInfoGenerator
+.ipynb_checkpoints
+.vscode
