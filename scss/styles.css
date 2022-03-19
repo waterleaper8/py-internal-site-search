@@ -92,6 +92,11 @@ p {
   font: 13px / normal;
 }
 
+#js-search-result .article .article_body .article_body_right .article_captionText {
+  margin-top: 4px;
+  line-height: 24px;
+}
+
 ul.pagination {
   display: -webkit-box;
   display: -ms-flexbox;

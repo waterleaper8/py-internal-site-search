@@ -5,14 +5,6 @@ let jsonPath = "allSiteInfos.json" // 記事情報のjsonのパス
 let jsonKeys = ["title", "captionText"] // 検索対象にするjson内のキー
 let output = "#js-search-result" // 検索対象にするjson内のキー
 
-// https://teratail.com/questions/195973
-const ranking = (arr, num) =>
-  [1, 2].indexOf(num) < 0
-    ? null
-    : arr.map(
-        (x, y, z) => z.filter((w) => (num == 2 ? w < x : w > x)).length + 1
-      )
-
 $(function () {
   const query = location.search.substring(1).split("&")
   // URLからキーワードを取得
@@ -29,6 +21,9 @@ $(function () {
         let [index, counts] = keyword_search(data, s, jsonKeys)
         console.log(index)
         console.log(counts)
+
+        // 最もシンプルで(驚くべき)ソートアルゴリズム？
+        // https://sucrose.hatenablog.com/entry/2021/10/13/231331
         for (let i = 0; i < counts.length; i++) {
           for (let j = 0; j < counts.length; j++) {
             if (counts[i] > counts[j]) {
@@ -41,6 +36,7 @@ $(function () {
             }
           }
         }
+
         console.log(index)
         console.log(counts)
         // console.log(sortedIndex)

@@ -58,12 +58,12 @@ def getAllInfo(pathlist):
         try:
             title = soup.select("title")[0].text
         except IndexError:
-            title = "タイトルを取得できませんでした"
+            title = "タイトルなし"
 
         try:
             captionText = soup.select("meta[name='description']")[0]["content"]
         except IndexError:
-            captionText = "説明を取得できませんでした"
+            captionText = "説明はありません"
 
         try:
             captionImage = soup.select('meta[property="og:image"]')[0]["content"]
