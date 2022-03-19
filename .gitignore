@@ -1,5 +1,5 @@
 *.json
-.siteInfoGenerator
+.venv
 .ipynb_checkpoints
 .vscode
 *.ipynb
