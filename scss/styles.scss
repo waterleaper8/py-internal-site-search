@@ -1,0 +1,112 @@
+body {
+  padding: 60px 120px;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.search_container {
+  box-sizing: border-box;
+  position: relative;
+  border: 1px solid #999;
+  display: block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  height: 2.3em;
+  width: 300px;
+  overflow: hidden;
+}
+.search_container input[type="text"] {
+  width: 100%;
+  border: none;
+  height: 2em;
+}
+.search_container input[type="text"]:focus {
+  outline: 0;
+}
+.search_container input[type="submit"] {
+  cursor: pointer;
+  font-family: FontAwesome;
+  font-size: 1.3em;
+  border: none;
+  background: none;
+  color: #3879d9;
+  position: absolute;
+  width: 2.5em;
+  height: 2.5em;
+  right: 0;
+  top: -10px;
+  outline: none;
+}
+
+#js-search-result {
+  margin-top: 12px;
+  .article {
+    padding: 12px 6px;
+    margin-bottom: 12px;
+    h3 {
+      margin: 12px 0;
+      a {
+        text-decoration: none;
+        color: #001ba0;
+        font: 13px/1.2em;
+        font-size: 20px;
+        line-height: 24px;
+        font-weight: normal;
+      }
+    }
+    .article_body {
+      display: flex;
+      img {
+        max-width: 128px;
+        max-height: 80px;
+        margin-right: 10px;
+        padding-top: 2px;
+      }
+      .article_body_right {
+        margin-left: 12px;
+        .article_url {
+          line-height: 17px;
+          color: #006d21;
+          font-style: normal;
+          word-wrap: break-word;
+          font: 13px / normal;
+        }
+      }
+    }
+  }
+}
+
+ul.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 18px 0 0;
+  padding: 0;
+  li {
+    margin-right: 6px;
+    list-style: none;
+    &.navi-active {
+      a {
+        border: 2px solid #ccc;
+        box-sizing: border-box;
+        padding: 10px;
+        pointer-events: none;
+        color: #666;
+        text-decoration: none;
+      }
+    }
+    &:not(.navi-active) {
+      a {
+        padding: 12px;
+        color: #666;
+        text-decoration: none;
+        &:hover {
+          background-color: #ccc;
+        }
+      }
+    }
+  }
+}

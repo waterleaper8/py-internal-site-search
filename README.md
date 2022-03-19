@@ -3,7 +3,7 @@
 サイト内検索のサンプルです。  
 Python でサイト内のリンクをすべて取得し、  
 ページごとのサイト情報を json で出力します。  
-JavaScript で json を取得し HTML を生成します。
+JavaScript で json を取得し 検索結果を HTML 上 で生成します。
 
 # 動作確認環境
 

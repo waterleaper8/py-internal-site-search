@@ -1,14 +1,22 @@
 // jQueryでキーワード検索の機能を実装する
 // https://cly7796.net/blog/javascript/implement-keyword-search-function-with-jquery/
-var paramKey = "keyword" // 検索キーワードとして取得するパラメータのキー
-var jsonPath = "allSiteInfos.json" // 記事情報のjsonのパス
-var jsonKeys = ["title", "captionText"] // 検索対象にするjson内のキー
-var output = "#js-search-result" // 検索対象にするjson内のキー
+let paramKey = "keyword" // 検索キーワードとして取得するパラメータのキー
+let jsonPath = "allSiteInfos.json" // 記事情報のjsonのパス
+let jsonKeys = ["title", "captionText"] // 検索対象にするjson内のキー
+let output = "#js-search-result" // 検索対象にするjson内のキー
+
+// https://teratail.com/questions/195973
+const ranking = (arr, num) =>
+  [1, 2].indexOf(num) < 0
+    ? null
+    : arr.map(
+        (x, y, z) => z.filter((w) => (num == 2 ? w < x : w > x)).length + 1
+      )
 
 $(function () {
   const query = location.search.substring(1).split("&")
   // URLからキーワードを取得
-  var s = get_search_keywords(paramKey)
+  let s = get_search_keywords(paramKey)
 
   if (s) {
     // ajaxで記事情報を取得
@@ -18,7 +26,24 @@ $(function () {
     }).then(
       function (data) {
         // キーワードに一致する記事情報のインデックスを取得
-        var index = keyword_search(data, s, jsonKeys)
+        let [index, counts] = keyword_search(data, s, jsonKeys)
+        console.log(index)
+        console.log(counts)
+        for (let i = 0; i < counts.length; i++) {
+          for (let j = 0; j < counts.length; j++) {
+            if (counts[i] > counts[j]) {
+              let tmp = counts[i]
+              counts[i] = counts[j]
+              counts[j] = tmp
+              let tmp2 = index[i]
+              index[i] = index[j]
+              index[j] = tmp2
+            }
+          }
+        }
+        console.log(index)
+        console.log(counts)
+        // console.log(sortedIndex)
         if (index.length > 0) {
           // 検索結果一覧を生成
           generate_result(data, index)
@@ -43,15 +68,15 @@ $(function () {
  */
 function get_search_keywords(key) {
   // URLからパラメータ取得
-  var params = []
-  var param = location.search.substring(1).split("&")
-  for (var i = 0; i < param.length; i++) {
+  let params = []
+  let param = location.search.substring(1).split("&")
+  for (let i = 0; i < param.length; i++) {
     params[i] = param[i].split("=")
   }
   // キーワードを配列形式で格納
-  var keywords = []
-  var separator = / |　|\+/g
-  for (var i = 0; i < params.length; i++) {
+  let keywords = []
+  let separator = / |　|\+/g
+  for (let i = 0; i < params.length; i++) {
     if (params[i][0] === key && params[i][1] !== undefined) {
       keywords = decodeURIComponent(params[i][1]).split(separator)
       break
@@ -66,7 +91,7 @@ function get_search_keywords(key) {
     return false
   }
   // キーワードを小文字に変換
-  for (var i = 0; i < keywords.length; i++) {
+  for (let i = 0; i < keywords.length; i++) {
     keywords[i] = keywords[i].toLowerCase()
   }
   return keywords
@@ -79,17 +104,16 @@ function get_search_keywords(key) {
  * @param {array}  jsonKeys    (required) 検索対象にする記事情報のキー
  */
 function keyword_search(articleData, keywords, jsonKeys) {
-  var data = articleData["data"]
-  console.log(data)
-  var h = []
+  let data = articleData["data"]
+  let h = []
   // 検索対象の値を配列にまとめる
-  for (var i = 0; i < data.length; i++) {
-    var v = []
-    for (var j = 0; j < jsonKeys.length; j++) {
-      var thisVal = data[i][jsonKeys[j]]
+  for (let i = 0; i < data.length; i++) {
+    let v = []
+    for (let j = 0; j < jsonKeys.length; j++) {
+      let thisVal = data[i][jsonKeys[j]]
       // 値が配列の場合はその各値を取得
       if (Array.isArray(thisVal)) {
-        for (var k = 0; k < thisVal.length; k++) {
+        for (let k = 0; k < thisVal.length; k++) {
           v.push(thisVal[k].toLowerCase())
         }
       } else {
@@ -100,21 +124,28 @@ function keyword_search(articleData, keywords, jsonKeys) {
   }
 
   // 一致する配列のindexを取得
-  var matchIndex = []
-  var matchCount
-  var thisArr
+  let matchIndex = []
+  let keywordCountList = []
+  let matchCount
+  let keywordCount
+  let keywordCountSum
+  let thisArr
   // 各記事のループ
-  for (var i = 0; i < h.length; i++) {
+  for (let i = 0; i < h.length; i++) {
+    keywordCountSum = 0
     matchCount = 0
     thisArr = h[i]
     // 検索キーワードでのループ
-    for (var j = 0; j < keywords.length; j++) {
+    for (let j = 0; j < keywords.length; j++) {
       // 記事の各項目でのループ
-      for (var k = 0; k < thisArr.length; k++) {
+      for (let k = 0; k < thisArr.length; k++) {
         // 記事項目内に検索キーワードが含まれる場合
         if (thisArr[k].indexOf(keywords[j]) > -1) {
           matchCount++
-          break
+          keywordCount = (thisArr[k].match(new RegExp(keywords[j], "g")) || [])
+            .length
+          // console.log(thisArr[k], keywords[j], keywordCount)
+          keywordCountSum += keywordCount
         }
       }
       // 検索キーワードが各項目に含まれなかった場合
@@ -124,10 +155,11 @@ function keyword_search(articleData, keywords, jsonKeys) {
       // 検索キーワードが全て記事に含まれていた場合
       if (matchCount >= keywords.length) {
         matchIndex.push(i)
+        keywordCountList.push(keywordCountSum)
       }
     }
   }
-  return matchIndex
+  return [matchIndex, keywordCountList]
 }
 
 /**
@@ -136,10 +168,10 @@ function keyword_search(articleData, keywords, jsonKeys) {
  * @param {array}  index       (required) 検索に一致する記事情報のindex
  */
 function generate_result(articleData, index) {
-  var data = articleData["data"]
-  var ins = ""
-  for (var i = 0; i < index.length; i++) {
-    var t = index[i]
+  let data = articleData["data"]
+  let ins = ""
+  for (let i = 0; i < index.length; i++) {
+    let t = index[i]
     ins += '<div class="article">'
     ins += '<h3 class="article_ttl">'
     ins += `<a href=${data[t]["url"]}>`
@@ -147,7 +179,9 @@ function generate_result(articleData, index) {
     ins += "</a>"
     ins += "</h3>"
     ins += '<div class="article_body">'
-    ins += `<img width='240' src='${data[t]["captionImage"]}' />`
+    if (data[t]["captionImage"] !== "") {
+      ins += `<img width='128' src='${data[t]["captionImage"]}' />`
+    }
     ins += '<div class="article_body_right">'
     ins += '<p class="article_url">'
     ins += data[t]["url"]
@@ -161,19 +195,4 @@ function generate_result(articleData, index) {
   }
   $(output).html(ins)
   pagenating()
-}
-
-// jQuery：「paginathing.js」を使えば静的なHTMLページへのページネーション実装が簡単にできる！
-// https://www.omakase.net/blog/2021/04/paginathingjs.html
-function pagenating() {
-  $("#js-search-result").paginathing({
-    //親要素のclassを記述
-    perPage: 5, //1ページあたりの表示件数
-    firstLast: true,
-    firstText: "最初へ",
-    lastText: "最後へ",
-    prevText: "前へ", //1つ前のページへ移動するボタンのテキスト
-    nextText: "次へ", //1つ次のページへ移動するボタンのテキスト
-    activeClass: "navi-active", //現在のページ番号に任意のclassを付与できます
-  })
 }
