@@ -6,7 +6,7 @@ function pagenating() {
     //親要素のclassを記述
     perPage: 5, //1ページあたりの表示件数
     prevNext: false, //前後のページへのリンクを表示するか
-    firstLast: false, //最初のページへのリンクを表示するか
+    firstLast: true, //最初のページへのリンクを表示するか
     pageNumbers: false, //ページ番号を表示するかどうか
     firstText: "最初へ",
     lastText: "最後へ",
