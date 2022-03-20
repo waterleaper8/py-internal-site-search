@@ -1,5 +1,6 @@
 // jQuery：「paginathing.js」を使えば静的なHTMLページへのページネーション実装が簡単にできる！
 // https://www.omakase.net/blog/2021/04/paginathingjs.html
+
 function pagenating() {
   $("#js-search-result").paginathing({
     //親要素のclassを記述

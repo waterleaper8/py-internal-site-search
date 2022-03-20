@@ -1,5 +1,6 @@
 // jQueryでキーワード検索の機能を実装する
 // https://cly7796.net/blog/javascript/implement-keyword-search-function-with-jquery/
+
 let paramKey = "keyword" // 検索キーワードとして取得するパラメータのキー
 let jsonPath = "allSiteInfos.json" // 記事情報のjsonのパス
 let jsonKeys = ["title", "captionText"] // 検索対象にするjson内のキー

@@ -3,10 +3,13 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+import unicodedata
 from urllib.parse import urlparse
 
 inputURL = input("サイトのURLを入力してください: ")
-inputLevel = int(input("探索する階層数を入力してください（1 or 2）: "))
+inputLevel = input("探索する階層数を入力してください（1 or 2）: ")
+# 全角数字などを整数型に変換
+inputLevel = int(unicodedata.normalize("NFKC", inputLevel))
 # inputLevelが1か2かでなければ、終了する
 if inputLevel not in [1, 2]:
     print("1か2を入力してください")
@@ -32,21 +35,27 @@ domain = netlocSplited[-2] + '.' + netlocSplited[-1]
 # print(domain)
 
 def getURLlist(url, domain):
-    #GETリクエストを送信
+    # GETリクエストを送信
     reqs = requests.get(url)
-    #URLをテキスト化し、解析を行う。その後BeautifulSoupオブジェクトを作る
+    # BeautifulSoupオブジェクトを作る
     soup = BeautifulSoup(reqs.content, 'html.parser')
-    #空のurlsのリストを用意
+
     urls = []
-    #全てのaタグをループ処理し、hrefで指定されたURLを出力する
+    # 全てのaタグをループ処理し、hrefで指定されたURLを出力する
     for link in soup.find_all('a'):
         href = link.get('href')
-        if href==None:
+        # ページ内リンクの場合、末尾から#を削除する
+        if '#' in href:
+            href = href.split('#')[0]
+        # hrefの中身が空の場合は、continueで処理をスキップする
+        if href == None:
             continue
+        # URLがリストに含まれていない場合かつ、
+        # hrefが指定のドメインを含む場合はリストに追加する
         elif href not in urls and domain in href:
             urls.append(href)
         # URLがリストに含まれていない場合かつ、
-        # ルートURLが含まれている場合はリストに追加する
+        # hrefが/で始まる場合はリストに追加する
         elif href not in urls and re.match(r'\/(?!/)', href):
             _url = rootURL + href
             urls.append(_url)
@@ -61,21 +70,17 @@ def getAllInfo(urls):
     }
     for path in tqdm(urls):
         res = requests.get(path)
-
         soup = BeautifulSoup(res.content, "html.parser")
 
-        soup
-
+        # タイトルとメタ説明とメタ画像を取得
         try:
             title = soup.select("title")[0].text
         except IndexError:
             title = "タイトルなし"
-
         try:
             captionText = soup.select("meta[name='description']")[0]["content"]
         except IndexError:
             captionText = "説明はありません"
-
         try:
             captionImage = soup.select('meta[property="og:image"]')[0]["content"]
         except IndexError:
