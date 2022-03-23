@@ -7,6 +7,7 @@ JavaScript で json を取得し 検索結果を HTML 上 で生成します。
 
 # 動作確認環境
 
+PHP 7.4.21
 Python 3.8.13
 
 # 使い方
