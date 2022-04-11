@@ -6,6 +6,8 @@ from tqdm import tqdm
 import unicodedata
 from urllib.parse import urlparse
 
+headers_dic = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}
+
 inputURL = input("サイトのURLを入力してください: ")
 inputLevel = input("探索する階層数を入力してください（1 or 2）: ")
 # 全角数字などを整数型に変換
@@ -15,6 +17,7 @@ if inputLevel not in [1, 2]:
     print("1か2を入力してください")
     exit()
 
+# URLからドメイン名を抽出する
 # https://www.python.ambitious-engineer.com/archives/35
 # URLをパースする
 parsed_url = urlparse(inputURL)
@@ -34,32 +37,44 @@ netlocSplited = netloc.split('.')
 domain = netlocSplited[-2] + '.' + netlocSplited[-1]
 # print(domain)
 
+def getTitle(url):
+    res = requests.get(url, headers=headers_dic)
+    soup = BeautifulSoup(res.content, "html.parser")
+    try:
+        title = soup.select("title")[0].text
+    except IndexError:
+        title = "タイトルなし"
+    return title
+
 def getURLlist(url, domain):
     # GETリクエストを送信
-    reqs = requests.get(url)
+    reqs = requests.get(url, headers=headers_dic)
     # BeautifulSoupオブジェクトを作る
     soup = BeautifulSoup(reqs.content, 'html.parser')
 
     urls = []
     # 全てのaタグをループ処理し、hrefで指定されたURLを出力する
     for link in soup.find_all('a'):
-        href = link.get('href')
-        # ページ内リンクの場合、末尾から#を削除する
-        if '#' in href:
-            href = href.split('#')[0]
-        # hrefの中身が空の場合は、continueで処理をスキップする
-        if href == None:
-            continue
-        # URLがリストに含まれていない場合かつ、
-        # hrefが指定のドメインを含む場合はリストに追加する
-        elif href not in urls and domain in href:
-            urls.append(href)
-        # URLがリストに含まれていない場合かつ、
-        # hrefが/で始まる場合はリストに追加する
-        elif href not in urls and re.match(r'\/(?!/)', href):
-            _url = rootURL + href
-            urls.append(_url)
-        else:
+        try:
+            href = link.get('href')
+            # ページ内リンクの場合、末尾から#を削除する
+            if '#' in href:
+                href = href.split('#')[0]
+            # hrefの中身が空の場合は、continueで処理をスキップする
+            if href == None:
+                continue
+            # URLがリストに含まれていない場合かつ、
+            # hrefが指定のドメインを含む場合はリストに追加する
+            elif href not in urls and domain in href:
+                urls.append(href)
+            # URLがリストに含まれていない場合かつ、
+            # hrefが/で始まる場合はリストに追加する
+            elif href not in urls and re.match(r'\/(?!/)', href):
+                _url = rootURL + href
+                urls.append(_url)
+            else:
+                continue
+        except TypeError:
             continue
     time.sleep(0.3)
     return urls
@@ -69,7 +84,7 @@ def getAllInfo(urls):
         "data":[]
     }
     for path in tqdm(urls):
-        res = requests.get(path)
+        res = requests.get(path, headers=headers_dic)
         soup = BeautifulSoup(res.content, "html.parser")
 
         # タイトルとメタ説明とメタ画像を取得
@@ -93,7 +108,7 @@ def getAllInfo(urls):
             "captionImage": captionImage
         }
         allSiteInfos["data"].append(_dict)
-        time.sleep(0.3)
+        time.sleep(0.5)
 
     return allSiteInfos
 
@@ -105,7 +120,10 @@ if inputLevel == 2:
         urls2 = getURLlist(url, domain)
         urls =  set(urls) | set(urls2)
 
-allSiteInfos = getAllInfo(urls)
+allSiteInfos = {
+    "siteTitle": getTitle(rootURL),
+    "data": getAllInfo(urls)["data"]
+    }
 
 import json
 with open('allSiteInfos.json', 'w') as f:

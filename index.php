@@ -1,3 +1,9 @@
+<?php
+$jsonData = file_get_contents("./allSiteInfos.json");
+$jsonDataDecoded = json_decode($jsonData, true);
+$siteTitle = $jsonDataDecoded["siteTitle"];
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -11,7 +17,7 @@
 </head>
 
 <body>
-  <h1>サイト内検索</h1>
+  <h1>サイト内検索 【<?php echo $siteTitle; ?>】</h1>
   <form action="search-result.php" method="GET" class="search_container">
     <input type="text" name="keyword" id="keyword" placeholder="検索キーワードを入力してください。" />
     <input type="submit" value="&#xf002">
