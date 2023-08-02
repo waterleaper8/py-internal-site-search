@@ -4,3 +4,4 @@
 .vscode
 *.ipynb
 git
+.DS_Store
