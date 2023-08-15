@@ -61,6 +61,8 @@ def getURLlist(url, domain):
             if '#' in href:
                 href = href.split('#')[0]
             # hrefの中身が空の場合は、continueで処理をスキップする
+            if href[:2] == "//":
+                href = href.replace("//", "https://")
             if href == None:
                 continue
             # URLがリストに含まれていない場合かつ、
