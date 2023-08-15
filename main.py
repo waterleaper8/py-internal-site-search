@@ -8,8 +8,8 @@ from urllib.parse import urlparse
 
 headers_dic = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"}
 
-inputURL = input("サイトのURLを入力してください: ")
-inputLevel = input("探索する階層数を入力してください（1 or 2）: ")
+inputURL = input("Input Site URL: ")
+inputLevel = input("Please enter the number of levels to explore（1 or 2）: ")
 # 全角数字などを整数型に変換
 inputLevel = int(unicodedata.normalize("NFKC", inputLevel))
 # inputLevelが1か2かでなければ、終了する
